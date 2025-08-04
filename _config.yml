@@ -11,7 +11,7 @@ title                    : "Jiajie Fan"
 title_separator          : "-"
 name                     : &name "Jiajie Fan"
 description              : &description "Generative AI Engineer for 3D Designs"
-url                      : https://jiajie96.github.io/jiajiefan.github.io/ # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+url                      : https://jiajie96.github.io/jiajiefan.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
 repository               : "jiajie96/jiajiefan.github.io"
 teaser                   :  # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
@@ -81,7 +81,7 @@ analytics:
 # Site Author
 author:
   name             : "Jiajie Fan"
-  avatar           : "profile.png"
+  avatar           : "bio-photo.jpg"
   bio              : "Currently a Ph.D. candidate in Advanced Computer Science at Leiden University, leveraging a Mechanical Engineering background from Technische Universität Darmstadt to drive innovation in generative engineering design. At BMW Group, focuses on integrating advanced diffusion models synthesize engineering designs, enhancing industrial design workflows. \n BMW Group work emphasizes collaborative AI-driven solutions for blueprint and 3D CAD generation, with a strong commitment to structural plausibility and guided design exploration. Passionate about applying state-of-the-art AI tools to tackle engineering challenges, deliver impactful results, and contribute to the future of generative design in automotive industries."
   location         : "Munich, Germany"
   employer         :

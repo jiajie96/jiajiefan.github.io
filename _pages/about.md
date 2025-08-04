@@ -10,4 +10,13 @@ redirect_from:
 
 This is Jiajie Fan.
 
+## Publications
+
+{% include base_path %}
+
+<ul>
+{% for post in site.publications reversed %}
+  {% include archive-single.html %}
+{% endfor %}
+</ul>
 

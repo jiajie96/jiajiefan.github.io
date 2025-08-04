@@ -37,32 +37,37 @@
     {% endif %}
     
 
-    {% if post.image%}
-      <div style="display: flex; align-items: flex-start; gap: 2em; margin: 2em 0;">
-        {% if post.image %}
-          <div style="flex: 0 0 180px; max-width: 180px;">
+    {% if post.image %}
+      <div style="display: table; width: 100%; margin: 2em 0;">
+        <div style="display: table-row;">
+          <div style="display: table-cell; vertical-align: top; width: 180px; max-width: 180px; padding-right: 2em;">
             <img src="{{ post.image | prepend: "/images/" | prepend: base_path }}" alt="Paper image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
           </div>
-        {% endif %}
-        <div style="flex: 1;">
-          {% if post.title %}
-            <h2 style="margin-top: 0;">{{ post.title }}</h2>
-          {% endif %}
-          {% if post.authors %}
-            <p style="margin-bottom: 0.5em;"><strong>Authors:</strong> {{ post.authors }}</p>
-          {% endif %}
-          {% if post.venue %}
-            <p style="margin-bottom: 0.5em;"><strong>Journal:</strong> <i>{{ post.venue }}</i></p>
-          {% endif %}
-          {% if post.paperurl %}
-            <p style="margin-bottom: 0.5em;"><a href="{{ post.paperurl }}" target="_blank" rel="noopener" class="btn">View Paper</a></p>
-          {% endif %}
-          {% if post.excerpt %}
-            <div style="margin-top: 1em;">
-              <strong>Abstract:</strong>
-              <div style="margin-top: 0.5em;">{{ post.excerpt }}</div>
-            </div>
-          {% endif %}
+          <div style="display: table-cell; vertical-align: top;">
+            <h2 style="margin-top: 0;">
+              {% if post.paperurl %}
+                <a href="{{ post.paperurl }}" target="_blank" rel="noopener">{{ post.title }}</a>
+              {% else %}
+                {{ post.title }}
+              {% endif %}
+            </h2>
+          </div>
+        </div>
+        <div style="display: table-row;">
+          <div style="display: table-cell; padding-top: 1em;" colspan="2">
+            {% if post.authors %}
+              <p style="margin-bottom: 0.5em;"><strong>Authors:</strong> {{ post.authors }}</p>
+            {% endif %}
+            {% if post.venue %}
+              <p style="margin-bottom: 0.5em;"><strong>Journal:</strong> <i>{{ post.venue }}</i></p>
+            {% endif %}
+            {% if post.excerpt %}
+              <div style="margin-top: 1em;">
+                <strong>Abstract:</strong>
+                <div style="margin-top: 0.5em;">{{ post.excerpt }}</div>
+              </div>
+            {% endif %}
+          </div>
         </div>
       </div>
     {% endif %}

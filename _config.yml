@@ -7,13 +7,13 @@
 
 # Site Settings
 locale                   : "en-US"
-title                    : "Your Name / Site Title"
+title                    : "Jiajie Fan"
 title_separator          : "-"
-name                     : &name "Your Name"
-description              : &description "personal description"
-url                      : https://abekh.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+name                     : &name "Jiajie Fan"
+description              : &description "Generative AI Engineer for 3D Designs"
+url                      : https://jiajiefan.com # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
-repository               : "abekh/abekh.github.io"
+repository               : "https://github.com/jiajie96/jiajiefan.github.io"
 teaser                   :  # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
 breadcrumbs              : false # true, false (default)
 words_per_minute         : 160
@@ -80,15 +80,15 @@ analytics:
 
 # Site Author
 author:
-  name             : "Abe"
+  name             : "Jiajie Fan"
   avatar           : "profile.png"
-  bio              : "Your biography for the left-hand sidebar"
-  location         : "Location"
+  bio              : "Currently a Ph.D. candidate in Advanced Computer Science at Leiden University, leveraging a Mechanical Engineering background from Technische Universität Darmstadt to drive innovation in generative engineering design. At BMW Group, focuses on integrating advanced diffusion models synthesize engineering designs, enhancing industrial design workflows. \n BMW Group work emphasizes collaborative AI-driven solutions for blueprint and 3D CAD generation, with a strong commitment to structural plausibility and guided design exploration. Passionate about applying state-of-the-art AI tools to tackle engineering challenges, deliver impactful results, and contribute to the future of generative design in automotive industries."
+  location         : "Munich, Germany"
   employer         :
   pubmed           : "https://www.ncbi.nlm.nih.gov/pubmed/?term=john+snow"
-  googlescholar    : "http://yourfullgooglescholarurl.com"
-  email            :
-  researchgate     :  # example: "https://www.researchgate.net/profile/yourprofile"
+  googlescholar    : "https://scholar.google.com/citations?user=wph9BlIAAAAJ&hl=en"
+  email            : jiajie.jf@gmail.com
+  researchgate     :  "https://www.researchgate.net/profile/Jiajie-Fan-7"
   uri              :
   bitbucket        :
   codepen          :
@@ -96,20 +96,20 @@ author:
   flickr           :
   facebook         :
   foursquare       :
-  github           : "academicpages"
+  github           : "jiajie96"
   google_plus      :
   keybase          :
   instagram        :
   impactstory      : #"https://profiles.impactstory.org/u/xxxx-xxxx-xxxx-xxxx"
   lastfm           :
   linkedin         :
-  orcid            : "http://orcid.org/yourorcidurl"
+  orcid            : "https://orcid.org/0009-0009-1825-5099"
   pinterest        :
   soundcloud       :
   stackoverflow    : # http://stackoverflow.com/users/123456/username
   steam            :
   tumblr           :
-  twitter          : "replacethistwitterhandle"
+  twitter          : "x.com/JiajieJf"
   vine             :
   weibo            :
   xing             :

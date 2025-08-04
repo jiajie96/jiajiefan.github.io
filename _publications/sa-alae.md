@@ -6,7 +6,7 @@ excerpt: "Deep Generative Models (DGMs) have been successfully employed to synth
 date: 2024-06-25
 venue: '2024 IEEE Conference on Artificial Intelligence (CAI)'
 paperurl: 'https://ieeexplore.ieee.org/abstract/document/10605375/'
-image: 'bio-photo.jpg'
+image: 'saalae.png'
 authors: 'Fan, Jiajie, Laure Vuaille, Thomas Bäck, and Hao Wang'
 ---
 

@@ -38,7 +38,7 @@
     
     {% if post.image %}
       {% assign not_arxiv = post.venue and post.venue != 'arXiv preprint' | not %}
-      <div style="display: flex; align-items: flex-start; gap: 1em; margin: 0.5em 0;{% if not_arxiv %} background: rgba(255, 249, 196, 0.25); border-radius: 8px; padding: 0.5em 1em;{% endif %}">
+      <div style="display: flex; align-items: flex-start; gap: 0em; margin: 0.5em 0;{% if not_arxiv %} background: rgba(255, 249, 196, 0.25); border-radius: 8px; padding: 0.5em 1em;{% endif %}">
         <div style="flex: 0 0 260px; max-width: 260px;">
           <img src="{{ post.image | prepend: "/images/" | prepend: base_path }}" alt="Paper image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
         </div>

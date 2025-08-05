@@ -37,10 +37,8 @@
     {% endif %}
     
     {% if post.image %}
-      {% assign img_name = post.image | split: '.' | first | downcase %}
-      {% if img_name == "fdd" or img_name == "saalae" or img_name == "podm" %}
         <div style="display: flex; align-items: flex-start; gap: 2em; margin: 2em 0;">
-          <div style="flex: 0 0 180px; max-width: 180px;">
+          <div style="flex: 0 0 180px; max-width: 200px;">
             <img src="{{ post.image | prepend: "/images/" | prepend: base_path }}" alt="Paper image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
           </div>
           <div style="flex: 1;">
@@ -62,33 +60,6 @@
               </div>
             {% endif %}
           </div>
-        </div>
-      {% else %}
-        <div style="margin: 2em 0;">
-          {% if post.image %}
-            <div style="text-align: center; margin-bottom: 1.5em;">
-              <img src="{{ post.image | prepend: "/images/" | prepend: base_path }}" alt="Paper image" style="max-width: 320px; width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
-            </div>
-          {% endif %}
-          {% if post.paperurl %}
-            <a href="{{ post.paperurl }}" target="_blank" rel="noopener">{{ post.title }}</a>
-          {% else %}
-            {{ post.title }}
-          {% endif %}
-          {% if post.authors %}
-            <p style="margin-bottom: 0.5em;"><strong>Authors:</strong> {{ post.authors }}</p>
-          {% endif %}
-          {% if post.venue %}
-            <p style="margin-bottom: 0.5em;"><strong>Journal:</strong> <i>{{ post.venue }}</i></p>
-          {% endif %}
-          {% if post.excerpt %}
-            <div style="margin-top: 1em;">
-              <strong>Abstract:</strong>
-              <div style="margin-top: 0.5em;">{{ post.excerpt }}</div>
-            </div>
-          {% endif %}
-        </div>
-      {% endif %}
     {% endif %}
 
   </article>

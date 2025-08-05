@@ -14,7 +14,15 @@
             {% assign domain = base_path %}
           {% endif %}
 
-          <a href="{{ domain }}{{ nav.url }}"><span class="nav__sub-title">{{ nav.title }}</span></a>
+          {% if nav.button and nav.download %}
+            <a href="{{ domain }}{{ nav.url }}" class="btn" download><span class="nav__sub-title">{{ nav.title }}</span></a>
+          {% elsif nav.button %}
+            <a href="{{ domain }}{{ nav.url }}" class="btn"><span class="nav__sub-title">{{ nav.title }}</span></a>
+          {% elsif nav.download %}
+            <a href="{{ domain }}{{ nav.url }}" download><span class="nav__sub-title">{{ nav.title }}</span></a>
+          {% else %}
+            <a href="{{ domain }}{{ nav.url }}"><span class="nav__sub-title">{{ nav.title }}</span></a>
+          {% endif %}
         {% else %}
           <span class="nav__sub-title">{{ nav.title }}</span>
         {% endif %}

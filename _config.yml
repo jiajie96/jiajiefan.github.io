@@ -82,13 +82,13 @@ analytics:
 author:
   name             : "Jiajie Fan"
   avatar           : "bio-photo.jpg"
-  bio              : "Passionated about GenAI for real-world designs. Currently a Ph.D. candidate in Advanced Computer Science at Leiden University, leveraging a Mechanical Engineering background from Technische Universität Darmstadt to drive innovation in generative engineering design. "
+  bio              : "Generative AI Engineer for 3D Designs"
   location         : "Munich, Germany"
   employer         :
   pubmed           : "https://www.ncbi.nlm.nih.gov/pubmed/?term=john+snow"
   googlescholar    : "https://scholar.google.com/citations?user=wph9BlIAAAAJ&hl=en"
   email            : jiajie.jf@gmail.com
-  researchgate     :  "https://www.researchgate.net/profile/Jiajie-Fan-7"
+  researchgate     : "https://www.researchgate.net/profile/Jiajie-Fan-7"
   uri              :
   bitbucket        :
   codepen          :
@@ -102,7 +102,7 @@ author:
   instagram        :
   impactstory      : #"https://profiles.impactstory.org/u/xxxx-xxxx-xxxx-xxxx"
   lastfm           :
-  linkedin         :
+  linkedin         : "https://de.linkedin.com/in/jiajiefan"
   orcid            : "https://orcid.org/0009-0009-1825-5099"
   pinterest        :
   soundcloud       :

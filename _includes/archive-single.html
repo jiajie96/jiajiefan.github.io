@@ -65,6 +65,11 @@
         </div>
       {% else %}
         <div style="margin: 2em 0;">
+          {% if post.image %}
+            <div style="text-align: center; margin-bottom: 1.5em;">
+              <img src="{{ post.image | prepend: "/images/" | prepend: base_path }}" alt="Paper image" style="max-width: 320px; width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
+            </div>
+          {% endif %}
           {% if post.paperurl %}
             <a href="{{ post.paperurl }}" target="_blank" rel="noopener">{{ post.title }}</a>
           {% else %}

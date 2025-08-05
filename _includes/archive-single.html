@@ -37,8 +37,8 @@
     {% endif %}
     
     {% if post.image %}
-      {% assign not_arxiv = post.venue and post.venue contains 'arxiv' | not %}
-      <div style="display: flex; align-items: flex-start; gap: 1em; margin: 1em 0;{% if not_arxiv %} background: #fff9c4; border-radius: 8px; padding: 0.5em 1em;{% endif %}">
+      {% assign not_arxiv = post.venue and post.venue contains 'preprint' | not %}
+      <div style="display: flex; align-items: flex-start; gap: 1em; margin: 1em 0;{% if not_arxiv %} background: rgba(255, 249, 196, 0.25); border-radius: 8px; padding: 0.5em 1em;{% endif %}">
         <div style="flex: 0 0 260px; max-width: 260px;">
           <img src="{{ post.image | prepend: "/images/" | prepend: base_path }}" alt="Paper image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
         </div>
@@ -55,7 +55,26 @@
             </p>
           {% endif %}
           {% if post.authors %}
-            <p style="margin-bottom: 0.25em;"><strong>Authors:</strong> {{ post.authors }}</p>
+            {% assign my_names = "Jiajie Fan,Fan, Jiajie" | split: "," %}
+            {% assign authors_raw = post.authors %}
+            {% assign authors = authors_raw | split: "," %}
+            <p style="margin-bottom: 0.25em;"><strong>Authors:</strong>
+              {% for author in authors %}
+                {% assign author_trimmed = author | strip %}
+                {% assign is_me = false %}
+                {% for my_name in my_names %}
+                  {% if author_trimmed == my_name %}
+                    {% assign is_me = true %}
+                  {% endif %}
+                {% endfor %}
+                {% if is_me %}
+                  <strong>{{ author_trimmed }}</strong>
+                {% else %}
+                  {{ author_trimmed }}
+                {% endif %}
+                {%- if forloop.last == false -%}, {% endif %}
+              {% endfor %}
+            </p>
           {% endif %}
           {% if post.venue %}
             <p style="margin-bottom: 0.25em;"><strong>Published in:</strong> <i>{{ post.venue }}</i></p>

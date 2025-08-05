@@ -37,33 +37,34 @@
     {% endif %}
     
     {% if post.image %}
-        <div style="display: flex; align-items: flex-start; gap: 1em; margin: 0 0 1em 0;">
-          <div style="flex: 0 0 260px; max-width: 260px;">
-            <img src="{{ post.image | prepend: "/images/" | prepend: base_path }}" alt="Paper image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
-          </div>
-          <div style="flex: 1;">
-            {% if post.paperurl %}
-              <a href="{{ post.paperurl }}" target="_blank" rel="noopener">{{ post.title }}</a>
-            {% else %}
-              {{ post.title }}
-            {% endif %}
-            {% if post.date %}
-              <p style="margin: 0.25em 0 0.25em 0; color: #888; font-size: 0.95em;">
-                <i class="fa fa-calendar" aria-hidden="true"></i>
-                {{ post.date | date: "%B %-d, %Y" }}
-              </p>
-            {% endif %}
-            {% if post.authors %}
-              <p style="margin-bottom: 0.25em;"><strong>Authors:</strong> {{ post.authors }}</p>
-            {% endif %}
-            {% if post.venue %}
-              <p style="margin-bottom: 0.25em;"><strong>Journal:</strong> <i>{{ post.venue }}</i></p>
-            {% endif %}
-            {% if post.excerpt %}
-              <div style="margin-top: 0.5em;"><strong>Abstract:</strong> <span style="margin-left: 0.5em;">{{ post.excerpt }}</span></div>
-            {% endif %}
-          </div>
+      {% assign not_arxiv = post.venue and post.venue contains 'arxiv' | not %}
+      <div style="display: flex; align-items: flex-start; gap: 1em; margin: 1em 0;{% if not_arxiv %} background: #fff9c4; border-radius: 8px; padding: 0.5em 1em;{% endif %}">
+        <div style="flex: 0 0 260px; max-width: 260px;">
+          <img src="{{ post.image | prepend: "/images/" | prepend: base_path }}" alt="Paper image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
         </div>
+        <div style="flex: 1;">
+          {% if post.paperurl %}
+            <a href="{{ post.paperurl }}" target="_blank" rel="noopener">{{ post.title }}</a>
+          {% else %}
+            {{ post.title }}
+          {% endif %}
+          {% if post.date %}
+            <p style="margin: 0.25em 0 0.25em 0; color: #888; font-size: 0.95em;">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+              {{ post.date | date: "%B %-d, %Y" }}
+            </p>
+          {% endif %}
+          {% if post.authors %}
+            <p style="margin-bottom: 0.25em;"><strong>Authors:</strong> {{ post.authors }}</p>
+          {% endif %}
+          {% if post.venue %}
+            <p style="margin-bottom: 0.25em;"><strong>Published in:</strong> <i>{{ post.venue }}</i></p>
+          {% endif %}
+          {% if post.excerpt %}
+            <div style="margin-top: 0.5em;"><strong>Abstract:</strong> <span style="margin-left: 0.5em;">{{ post.excerpt }}</span></div>
+          {% endif %}
+        </div>
+      </div>
     {% endif %}
 
   </article>

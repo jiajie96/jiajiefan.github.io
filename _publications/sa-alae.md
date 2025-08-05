@@ -8,5 +8,5 @@ preprint: false
 venue: '2024 IEEE Conference on Artificial Intelligence (CAI)'
 paperurl: 'https://ieeexplore.ieee.org/abstract/document/10605375/'
 image: 'saalae.png'
-authors: 'Fan, Jiajie, Laure Vuaille, Thomas Bäck, and Hao Wang'
+authors: 'Jiajie Fan, Laure Vuaille, Thomas Bäck, and Hao Wang'
 ---

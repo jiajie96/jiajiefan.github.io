@@ -37,8 +37,8 @@
     {% endif %}
     
     {% if post.image %}
-        <div style="display: flex; align-items: flex-start; gap: 1em; margin: 1em 0 1em 0;">
-          <div style="flex: 0 0 260px; max-width: 260px; margin-left: 0;">
+        <div style="display: flex; align-items: flex-start; gap: 1em; margin: 0 0 1em 0;">
+          <div style="flex: 0 0 260px; max-width: 260px;">
             <img src="{{ post.image | prepend: "/images/" | prepend: base_path }}" alt="Paper image" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
           </div>
           <div style="flex: 1;">

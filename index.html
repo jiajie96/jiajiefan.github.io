@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jiajie Fan | Starlight Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --black: #000000;
+  --star: #E8EAFF;
+  --amber: #B8C4FF;
+  --cyan: #A0B4FF;
+  --star-dim: rgba(220, 225, 255, 0.15);
+  --star-glow: 0 0 10px rgba(220, 225, 255, 0.5), 0 0 30px rgba(200, 210, 255, 0.15);
+  --amber-glow: 0 0 10px rgba(184, 196, 255, 0.4);
+  --cyan-glow: 0 0 10px rgba(160, 180, 255, 0.4);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Fira Code', monospace;
+  background: var(--black);
+  color: var(--star);
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+h1, h2, h3, h4, h5, h6 { font-family: 'Rajdhani', sans-serif; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+a { color: var(--cyan); text-decoration: none; transition: color 0.3s, text-shadow 0.3s; }
+a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
+
+/* Matrix Rain Canvas */
+#matrix-canvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+}
+
+/* Main Container */
+.main-container {
+  position: relative; z-index: 1;
+  max-width: 960px; margin: 0 auto; padding: 40px 20px;
+}
+
+/* Pipeline Connector */
+.pipeline-connector {
+  width: 2px; height: 60px; margin: 0 auto; position: relative;
+  background: repeating-linear-gradient(to bottom, var(--star) 0px, var(--star) 6px, transparent 6px, transparent 12px);
+  animation: flowDown 1s linear infinite;
+}
+@keyframes flowDown {
+  from { background-position: 0 0; }
+  to { background-position: 0 12px; }
+}
+.pipeline-connector::after {
+  content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 6px solid transparent; border-right: 6px solid transparent;
+  border-top: 8px solid var(--star);
+}
+
+/* Section Node */
+.section-node {
+  border: 1px solid rgba(220, 225, 255, 0.3);
+  background: rgba(0, 0, 0, 0.85);
+  padding: 30px;
+  position: relative;
+  margin: 0 auto;
+}
+.section-node::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  border: 1px solid transparent;
+  background: linear-gradient(var(--black), var(--black)) padding-box,
+              linear-gradient(135deg, var(--star), var(--cyan), var(--amber)) border-box;
+  opacity: 0.3; pointer-events: none; z-index: 0;
+}
+.section-node > * { position: relative; z-index: 1; }
+
+.node-header {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px dashed rgba(220, 225, 255, 0.25);
+  padding-bottom: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 8px;
+}
+.node-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px; color: var(--amber); letter-spacing: 3px; font-weight: 600;
+}
+.node-status { font-size: 11px; color: rgba(220, 225, 255, 0.5); }
+.node-status .active { color: var(--star); }
+
+/* Binary Border Frame */
+.binary-frame {
+  position: relative; padding: 4px; overflow: hidden;
+}
+.binary-frame::before {
+  content: '01001010 01001001 01000001 01001010 01001001 01000101 00100000 01000110 01000001 01001110 00100000 01001101 01000001 01010100 01010010 01001001 01011000 00100000 01000110 01001100 01001111 01010111 ';
+  position: absolute; top: 0; left: 0; right: 0;
+  font-size: 9px; color: rgba(220, 225, 255, 0.2);
+  white-space: nowrap; overflow: hidden; height: 12px; line-height: 12px;
+  animation: scrollBinary 20s linear infinite;
+  font-family: 'Fira Code', monospace;
+}
+.binary-frame::after {
+  content: '10110101 10110110 10111100 10110101 10110110 10111101 11011111 10110101 10111110 10110001 11011110 ';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  font-size: 9px; color: rgba(220, 225, 255, 0.2);
+  white-space: nowrap; overflow: hidden; height: 12px; line-height: 12px;
+  animation: scrollBinary 15s linear infinite reverse;
+  font-family: 'Fira Code', monospace;
+}
+@keyframes scrollBinary {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Init Background Covers */
+#init {
+  overflow: hidden;
+}
+.init-bg {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; z-index: 0; pointer-events: none;
+}
+.init-bg img {
+  width: 50%; height: 100%; object-fit: cover;
+  opacity: 0.18; filter: brightness(1.2) saturate(0.3);
+  transition: opacity 0.5s;
+}
+#init:hover .init-bg img { opacity: 0.25; }
+
+/* Hero Section */
+.hero-section { text-align: center; padding: 60px 20px 30px; position: relative; z-index: 1; }
+.hero-identity h1 {
+  font-size: clamp(28px, 5vw, 52px); color: var(--star);
+  text-shadow: var(--star-glow); letter-spacing: 6px; margin-bottom: 8px;
+}
+.hero-identity .tagline {
+  font-size: clamp(13px, 2vw, 16px); color: var(--amber);
+  letter-spacing: 2px; margin-bottom: 4px;
+}
+.hero-identity .location {
+  font-size: 12px; color: rgba(220, 225, 255, 0.5); margin-bottom: 30px;
+}
+
+/* Bio Photo */
+.bio-photo-container {
+  width: 140px; height: 140px; border-radius: 50%; margin: 25px auto;
+  position: relative; overflow: hidden;
+  border: 2px solid var(--star);
+  box-shadow: var(--star-glow);
+}
+.bio-photo-container img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.bio-photo-container .scan-line {
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(to bottom, rgba(220, 225, 255, 0.6), transparent);
+  animation: scanLine 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes scanLine {
+  0% { top: -3px; opacity: 1; }
+  100% { top: 100%; opacity: 0.3; }
+}
+
+/* Links Bar */
+.links-bar {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 20px;
+  margin-top: 20px; font-size: 12px;
+}
+.links-bar a { color: var(--cyan); }
+.links-bar a:hover { color: var(--amber); }
+.links-bar span.sep { color: rgba(220, 225, 255, 0.25); }
+
+/* Decrypt Hover */
+.decrypt-hover { cursor: default; transition: text-shadow 0.3s; }
+.decrypt-hover:hover { text-shadow: var(--star-glow); }
+
+/* About Section */
+.about-text { font-size: 13px; color: rgba(220, 225, 255, 0.75); line-height: 1.8; }
+
+/* Process Node (Dissertation) */
+.process-node {
+  border-color: var(--amber);
+}
+.process-node .node-header { border-bottom-color: rgba(184, 196, 255, 0.3); }
+.process-node h2 { color: var(--amber); text-shadow: var(--amber-glow); }
+
+.diss-title {
+  font-size: clamp(18px, 3vw, 26px); color: var(--amber);
+  text-shadow: var(--amber-glow); margin-bottom: 6px;
+}
+.diss-meta { font-size: 12px; color: rgba(220, 225, 255, 0.5); margin-bottom: 20px; }
+.diss-meta span { color: var(--cyan); }
+
+
+/* Publications */
+.pub-list { list-style: none; }
+.pub-item {
+  display: flex; gap: 18px; padding: 18px 0;
+  border-bottom: 1px solid rgba(220, 225, 255, 0.1);
+  align-items: flex-start; flex-wrap: wrap;
+}
+.pub-item:last-child { border-bottom: none; }
+.pub-thumb {
+  width: 130px; min-width: 130px; height: 90px; overflow: hidden;
+  border: 1px solid rgba(220, 225, 255, 0.2);
+  flex-shrink: 0;
+}
+.pub-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(0.3); transition: filter 0.3s; }
+.pub-item:hover .pub-thumb img { filter: grayscale(0); }
+.pub-info { flex: 1; min-width: 220px; }
+.pub-info .pub-name { font-size: 14px; color: var(--star); font-weight: 500; margin-bottom: 3px; }
+.pub-info .pub-full-title { font-size: 12px; color: rgba(220, 225, 255, 0.55); margin-bottom: 4px; font-style: italic; }
+.pub-info .pub-authors { font-size: 11px; color: rgba(220, 225, 255, 0.4); margin-bottom: 3px; }
+.pub-info .pub-venue { font-size: 11px; color: var(--amber); margin-bottom: 6px; }
+.pub-info .pub-links a {
+  font-size: 11px; color: var(--cyan); margin-right: 14px;
+  border: 1px solid rgba(160, 180, 255, 0.3); padding: 2px 8px;
+  transition: all 0.3s;
+}
+.pub-info .pub-links a:hover {
+  background: rgba(160, 180, 255, 0.1); border-color: var(--cyan);
+}
+
+/* Experience */
+.exp-list { list-style: none; }
+.exp-item {
+  padding: 16px 0; border-bottom: 1px solid rgba(220, 225, 255, 0.1);
+}
+.exp-item:last-child { border-bottom: none; }
+.exp-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.exp-header .exp-role { font-size: 14px; color: var(--star); font-weight: 500; }
+.exp-header .exp-date { font-size: 11px; color: rgba(220, 225, 255, 0.45); }
+.exp-company { font-size: 13px; color: var(--amber); margin-bottom: 5px; }
+.exp-desc { font-size: 12px; color: rgba(220, 225, 255, 0.55); }
+
+/* Skills */
+.skills-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.skill-chip {
+  border: 1px solid rgba(220, 225, 255, 0.2); padding: 10px 14px;
+  font-size: 12px; color: var(--star);
+  background: rgba(220, 225, 255, 0.03);
+  transition: all 0.3s; text-align: center;
+}
+.skill-chip:hover {
+  border-color: var(--cyan); background: rgba(160, 180, 255, 0.06);
+  color: var(--cyan); text-shadow: var(--cyan-glow);
+}
+
+/* Education */
+.edu-list { list-style: none; }
+.edu-item { padding: 14px 0; border-bottom: 1px solid rgba(220, 225, 255, 0.1); }
+.edu-item:last-child { border-bottom: none; }
+.edu-degree { font-size: 14px; color: var(--star); font-weight: 500; }
+.edu-school { font-size: 13px; color: var(--amber); }
+.edu-dates { font-size: 11px; color: rgba(220, 225, 255, 0.45); }
+
+/* Contact / Exit */
+.contact-grid {
+  display: flex; flex-wrap: wrap; gap: 14px; justify-content: center;
+}
+.contact-link {
+  border: 1px solid rgba(220, 225, 255, 0.25); padding: 10px 20px;
+  font-size: 12px; color: var(--cyan); transition: all 0.3s;
+  display: inline-block;
+}
+.contact-link:hover {
+  border-color: var(--amber); color: var(--amber);
+  background: rgba(184, 196, 255, 0.06); text-shadow: var(--amber-glow);
+}
+
+/* SVG Flow Lines */
+.flow-line-svg {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+.flow-dash {
+  stroke: var(--star); stroke-width: 1; fill: none;
+  stroke-dasharray: 8 6;
+  animation: dashFlow 1.5s linear infinite;
+}
+@keyframes dashFlow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -28; }
+}
+
+/* Horizontal data flow decoration */
+.data-flow-line {
+  height: 1px; margin: 15px 0; position: relative; overflow: visible;
+}
+.data-flow-line svg { width: 100%; height: 2px; }
+.data-flow-line .dash-line {
+  stroke: rgba(220, 225, 255, 0.2); stroke-width: 1; fill: none;
+  stroke-dasharray: 6 4;
+  animation: dashFlow 2s linear infinite;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .main-container { padding: 20px 10px; }
+  .section-node { padding: 20px 14px; }
+  .pub-thumb { width: 100px; min-width: 100px; height: 70px; }
+  .node-header { flex-direction: column; align-items: flex-start; }
+  .chapter-item { flex-direction: column; gap: 6px; }
+  .skills-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}
+@media (max-width: 480px) {
+  body { font-size: 12px; }
+  .hero-identity h1 { letter-spacing: 3px; }
+  .bio-photo-container { width: 110px; height: 110px; }
+  .pub-item { flex-direction: column; }
+  .pub-thumb { width: 100%; min-width: unset; height: 120px; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: rgba(220, 225, 255, 0.3); }
+::-webkit-scrollbar-thumb:hover { background: rgba(220, 225, 255, 0.5); }
+
+/* Cursor blink */
+.cursor-blink::after {
+  content: '_'; animation: blink 1s step-end infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+
+<div class="main-container">
+
+  <!-- ===================== INIT: Hero/Identity ===================== -->
+  <section class="section-node" id="init">
+    <div class="init-bg">
+      <img src="../assets/images/cover_back.jpeg" alt="">
+      <img src="../assets/images/cover_front.jpeg" alt="">
+    </div>
+    <div class="node-header">
+      <span class="node-label">[NODE: INIT]</span>
+      <span class="node-status">PID: 000 &nbsp;|&nbsp; <span class="active">STATUS: RUNNING</span></span>
+    </div>
+    <div class="hero-section">
+      <div class="bio-photo-container">
+        <img src="../assets/images/bio-photo.jpeg" alt="Jiajie Fan">
+        <div class="scan-line"></div>
+      </div>
+      <div class="hero-identity">
+        <h1 class="decrypt-hover" data-text="JIAJIE FAN">JIAJIE FAN</h1>
+        <p class="tagline decrypt-hover" data-text="Founding Engineer @ Kyrall | PhD in Generative AI for Engineering Design">Founding Engineer @ Kyrall | PhD in Generative AI for Engineering Design</p>
+        <p class="location">// Munich, Germany</p>
+      </div>
+
+      <div class="links-bar">
+        <a href="mailto:jiajie.jf@gmail.com" target="_blank">jiajie.jf@gmail.com</a>
+        <span class="sep">|</span>
+        <a href="https://github.com/jiajie96" target="_blank" rel="noopener">GitHub: jiajie96</a>
+        <span class="sep">|</span>
+        <a href="https://github.com/JiajieAI" target="_blank" rel="noopener">GitHub: JiajieAI</a>
+        <span class="sep">|</span>
+        <a href="https://linkedin.com/in/jiajiefan" target="_blank" rel="noopener">LinkedIn</a>
+        <span class="sep">|</span>
+        <a href="https://scholar.google.com/citations?user=wph9BlIAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="pipeline-connector"></div>
+
+  <!-- ===================== DATA_INPUT: About/Bio ===================== -->
+  <section class="section-node" id="data-input">
+    <div class="node-header">
+      <span class="node-label">[NODE: DATA_INPUT]</span>
+      <span class="node-status">PID: 010 &nbsp;|&nbsp; <span class="active">STATUS: STREAMING</span></span>
+    </div>
+    <div class="binary-frame">
+      <p class="about-text" style="padding: 10px 0;">
+        Founding Engineer at <span style="color:var(--amber);">Kyrall</span>, building AI-powered 3D CAD generation systems. PhD researcher in <span style="color:var(--cyan);">Generative AI for Engineering Design</span>, specializing in deep generative models that bridge the gap between machine learning and real-world product design. My work spans spectral-domain diffusion models, NURBS surface learning, and plausibility evaluation of AI-generated designs. Published at ECCV, IEEE CAI, and arXiv. Passionate about turning cutting-edge research into production systems.
+      </p>
+    </div>
+    <svg class="data-flow-line" style="width:100%;height:2px;margin-top:10px;">
+      <line x1="0" y1="1" x2="100%" y2="1" class="dash-line" />
+    </svg>
+  </section>
+
+  <div class="pipeline-connector"></div>
+
+  <!-- ===================== PROCESS: Dissertation ===================== -->
+  <section class="section-node process-node" id="process">
+    <div class="node-header">
+      <span class="node-label" style="color:var(--amber);">[NODE: PROCESS] &mdash; CENTRAL</span>
+      <span class="node-status">PID: 100 &nbsp;|&nbsp; <span class="active">STATUS: EXECUTING</span></span>
+    </div>
+    <h2 class="diss-title decrypt-hover" data-text="Deep Generative Models for Engineering Design">Deep Generative Models for Engineering Design</h2>
+    <div class="diss-meta">
+      INSTITUTION: <span>Leiden University</span> &nbsp;|&nbsp;
+      EXECUTION_DATE: <span style="color:var(--amber);">2026-03-24</span> &nbsp;|&nbsp;
+      SPONSOR: <span>BMW AG</span><br>
+      SUPERVISOR: <span>Prof. Thomas B&auml;ck</span> &nbsp;|&nbsp;
+      CO-SUPERVISOR: <span>Dr. Hao Wang</span>
+    </div>
+
+  </section>
+
+  <div class="pipeline-connector"></div>
+
+  <!-- ===================== OUTPUT[]: Publications ===================== -->
+  <section class="section-node" id="output">
+    <div class="node-header">
+      <span class="node-label">[NODE: OUTPUT[]]</span>
+      <span class="node-status">PID: 200 &nbsp;|&nbsp; <span class="active">COUNT: 5</span></span>
+    </div>
+    <ul class="pub-list">
+      <li class="pub-item">
+        <div class="pub-thumb"><img src="../assets/images/spodify.png" alt="SpoDify"></div>
+        <div class="pub-info">
+          <div class="pub-name decrypt-hover" data-text="SpoDify">SpoDify</div>
+          <div class="pub-full-title">"A Shape Is Worth 512 Numbers: Spectral-domain Diffusion Modeling for 3D Shape Generation"</div>
+          <div class="pub-authors">Jiajie Fan, Amal Trigui, Andrea Bonfanti, Felix Dietrich, Thomas B&auml;ck, Hao Wang</div>
+          <div class="pub-venue">IEEE CAI 2026</div>
+          <div class="pub-links">
+            <a href="https://arxiv.org/pdf/2503.06485" target="_blank" rel="noopener">[PDF]</a>
+          </div>
+        </div>
+      </li>
+      <li class="pub-item">
+        <div class="pub-thumb"><img src="../assets/images/fdd.png" alt="FDD"></div>
+        <div class="pub-info">
+          <div class="pub-name decrypt-hover" data-text="FDD">FDD</div>
+          <div class="pub-full-title">"Enhancing Plausibility Evaluation for Generated Designs with Denoising Autoencoder"</div>
+          <div class="pub-authors">Jiajie Fan, Amal Trigui, Thomas B&auml;ck, Hao Wang</div>
+          <div class="pub-venue">ECCV 2024</div>
+          <div class="pub-links">
+            <a href="https://arxiv.org/pdf/2403.05352" target="_blank" rel="noopener">[PDF]</a>
+          </div>
+        </div>
+      </li>
+      <li class="pub-item">
+        <div class="pub-thumb"><img src="../assets/images/nurbs.png" alt="NeuroNURBS"></div>
+        <div class="pub-info">
+          <div class="pub-name decrypt-hover" data-text="NeuroNURBS">NeuroNURBS</div>
+          <div class="pub-full-title">"NeuroNURBS: Learning Efficient Surface Representations for 3D Solids"</div>
+          <div class="pub-authors">Jiajie Fan, Babak Gholami, Thomas B&auml;ck, Hao Wang</div>
+          <div class="pub-venue">Under Review</div>
+          <div class="pub-links">
+            <a href="https://arxiv.org/pdf/2411.10848" target="_blank" rel="noopener">[PDF]</a>
+          </div>
+        </div>
+      </li>
+      <li class="pub-item">
+        <div class="pub-thumb"><img src="../assets/images/podm.png" alt="PODM"></div>
+        <div class="pub-info">
+          <div class="pub-name decrypt-hover" data-text="PODM">PODM</div>
+          <div class="pub-full-title">"On the Noise Scheduling for Generating Plausible Designs with Diffusion Models"</div>
+          <div class="pub-authors">Jiajie Fan, Laure Vuaille, Thomas B&auml;ck, Hao Wang</div>
+          <div class="pub-venue">arXiv 2023</div>
+          <div class="pub-links">
+            <a href="https://arxiv.org/pdf/2311.11207" target="_blank" rel="noopener">[PDF]</a>
+          </div>
+        </div>
+      </li>
+      <li class="pub-item">
+        <div class="pub-thumb"><img src="../assets/images/saalae.png" alt="SA-ALAE"></div>
+        <div class="pub-info">
+          <div class="pub-name decrypt-hover" data-text="SA-ALAE">SA-ALAE</div>
+          <div class="pub-full-title">"Adversarial latent autoencoder with self-attention for structural image synthesis"</div>
+          <div class="pub-authors">Jiajie Fan, Laure Vuaille, Thomas B&auml;ck, Hao Wang</div>
+          <div class="pub-venue">IEEE CAI 2024</div>
+          <div class="pub-links">
+            <a href="https://ieeexplore.ieee.org/abstract/document/10605375/" target="_blank" rel="noopener">[LINK]</a>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <div class="pipeline-connector"></div>
+
+  <!-- ===================== RUNTIME_LOG: Experience ===================== -->
+  <section class="section-node" id="runtime-log">
+    <div class="node-header">
+      <span class="node-label">[NODE: RUNTIME_LOG]</span>
+      <span class="node-status">PID: 300 &nbsp;|&nbsp; <span class="active">ENTRIES: 5</span></span>
+    </div>
+    <ul class="exp-list">
+      <li class="exp-item">
+        <div class="exp-header">
+          <span class="exp-role decrypt-hover" data-text="Founding Engineer">Founding Engineer</span>
+          <span class="exp-date">Aug 2025 &ndash; Present &nbsp;|&nbsp; Munich</span>
+        </div>
+        <div class="exp-company">Kyrall</div>
+        <div class="exp-desc">Built AI-powered 3D CAD generation system; agentic workflows; instruction management; data creation infrastructure.</div>
+      </li>
+      <li class="exp-item">
+        <div class="exp-header">
+          <span class="exp-role decrypt-hover" data-text="PhD Researcher">PhD Researcher</span>
+          <span class="exp-date">Oct 2022 &ndash; Jul 2025 &nbsp;|&nbsp; Munich</span>
+        </div>
+        <div class="exp-company">BMW Group</div>
+        <div class="exp-desc">Published 6 papers (ECCV 2024, IEEE CAI 2024, IEEE CAI 2026); developed NeuroNURBS; BMW Doctoral Speaker 2024.</div>
+      </li>
+      <li class="exp-item">
+        <div class="exp-header">
+          <span class="exp-role decrypt-hover" data-text="Internship">Internship</span>
+          <span class="exp-date">Apr &ndash; Nov 2021 &nbsp;|&nbsp; Munich</span>
+        </div>
+        <div class="exp-company">BMW Group</div>
+        <div class="exp-desc">AR/VR development; digital twin projects.</div>
+      </li>
+      <li class="exp-item">
+        <div class="exp-header">
+          <span class="exp-role decrypt-hover" data-text="Full-stack Developer">Full-stack Developer</span>
+          <span class="exp-date">May 2021 &ndash; Oct 2022 &nbsp;|&nbsp; M&uuml;nster</span>
+        </div>
+        <div class="exp-company">Bausicht</div>
+        <div class="exp-desc">TypeScript/Vue.js web application development.</div>
+      </li>
+      <li class="exp-item">
+        <div class="exp-header">
+          <span class="exp-role decrypt-hover" data-text="Working Student">Working Student</span>
+          <span class="exp-date">Apr 2020 &ndash; Feb 2021</span>
+        </div>
+        <div class="exp-company">TU Darmstadt</div>
+        <div class="exp-desc">RNN/LSTM time-series forecasting research.</div>
+      </li>
+    </ul>
+  </section>
+
+  <div class="pipeline-connector"></div>
+
+  <!-- ===================== CONFIG: Skills ===================== -->
+  <section class="section-node" id="config">
+    <div class="node-header">
+      <span class="node-label">[NODE: CONFIG]</span>
+      <span class="node-status">PID: 400 &nbsp;|&nbsp; <span class="active">MODULES: LOADED</span></span>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-chip decrypt-hover" data-text="LLM / AI Engineering">LLM / AI Engineering</div>
+      <div class="skill-chip decrypt-hover" data-text="Generative ML">Generative ML</div>
+      <div class="skill-chip decrypt-hover" data-text="CAD / 3D Modeling">CAD / 3D Modeling</div>
+      <div class="skill-chip decrypt-hover" data-text="Data Engineering">Data Engineering</div>
+      <div class="skill-chip decrypt-hover" data-text="Cloud / Infra">Cloud / Infra</div>
+      <div class="skill-chip decrypt-hover" data-text="Python">Python</div>
+      <div class="skill-chip decrypt-hover" data-text="C#">C#</div>
+      <div class="skill-chip decrypt-hover" data-text="TypeScript">TypeScript</div>
+      <div class="skill-chip decrypt-hover" data-text="Systems Architecture">Systems Architecture</div>
+    </div>
+  </section>
+
+  <div class="pipeline-connector"></div>
+
+  <!-- ===================== MODULES: Education ===================== -->
+  <section class="section-node" id="modules">
+    <div class="node-header">
+      <span class="node-label">[NODE: MODULES]</span>
+      <span class="node-status">PID: 500 &nbsp;|&nbsp; <span class="active">STATUS: LOADED</span></span>
+    </div>
+    <ul class="edu-list">
+      <li class="edu-item">
+        <div class="edu-degree decrypt-hover" data-text="PhD, Advanced Computer Science">PhD, Advanced Computer Science</div>
+        <div class="edu-school">Leiden University</div>
+        <div class="edu-dates">Oct 2022 &ndash; Aug 2025</div>
+      </li>
+      <li class="edu-item">
+        <div class="edu-degree decrypt-hover" data-text="MSc, Mechanical Engineering">MSc, Mechanical Engineering</div>
+        <div class="edu-school">TU Darmstadt</div>
+        <div class="edu-dates">Oct 2018 &ndash; Oct 2022</div>
+      </li>
+    </ul>
+  </section>
+
+  <div class="pipeline-connector"></div>
+
+  <!-- ===================== EXIT: Contact/Links ===================== -->
+  <section class="section-node" id="exit">
+    <div class="node-header">
+      <span class="node-label">[NODE: EXIT]</span>
+      <span class="node-status">PID: 999 &nbsp;|&nbsp; <span class="active">AWAITING_INPUT</span></span>
+    </div>
+    <div style="text-align:center; margin-bottom: 18px;">
+      <p style="color: rgba(220,225,255,0.5); font-size: 13px;">// Establish connection</p>
+    </div>
+    <div class="contact-grid">
+      <a href="mailto:jiajie.jf@gmail.com" class="contact-link" target="_blank">EMAIL: jiajie.jf@gmail.com</a>
+      <a href="https://github.com/jiajie96" class="contact-link" target="_blank" rel="noopener">GITHUB: jiajie96</a>
+      <a href="https://github.com/JiajieAI" class="contact-link" target="_blank" rel="noopener">GITHUB: JiajieAI</a>
+      <a href="https://linkedin.com/in/jiajiefan" class="contact-link" target="_blank" rel="noopener">LINKEDIN: /in/jiajiefan</a>
+      <a href="https://scholar.google.com/citations?user=wph9BlIAAAAJ&hl=en" class="contact-link" target="_blank" rel="noopener">GOOGLE SCHOLAR</a>
+    </div>
+    <div style="text-align:center; margin-top: 30px;">
+      <p style="color: rgba(220,225,255,0.25); font-size: 11px;">
+        <span class="cursor-blink">&gt; PROCESS TERMINATED SUCCESSFULLY. EXIT CODE 0</span>
+      </p>
+    </div>
+  </section>
+
+  <div style="height: 60px;"></div>
+
+</div><!-- /main-container -->
+
+<script>
+/* ========== Matrix Rain Canvas ========== */
+(function() {
+  const canvas = document.getElementById('matrix-canvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const chinese = '深度生成模型工程设计智能神经网络扩散光谱三维曲面点云数据驱动创新研究学习训练推理优化';
+  const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+  const chars = chinese + latin;
+
+  const fontSize = 14;
+  let columns = Math.floor(canvas.width / fontSize);
+  let drops = [];
+  let speeds = [];
+
+  function initDrops() {
+    columns = Math.floor(canvas.width / fontSize);
+    drops = [];
+    speeds = [];
+    for (let i = 0; i < columns; i++) {
+      drops[i] = Math.random() * -100;
+      speeds[i] = 0.3 + Math.random() * 0.7;
+    }
+  }
+  initDrops();
+  window.addEventListener('resize', initDrops);
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < columns; i++) {
+      const char = chars[Math.floor(Math.random() * chars.length)];
+      const x = i * fontSize;
+      const y = drops[i] * fontSize;
+      const opacity = 0.08 + Math.random() * 0.25;
+      const bright = Math.random() > 0.92;
+      if (bright) {
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.6 + Math.random() * 0.4})`;
+        ctx.shadowColor = 'rgba(200, 210, 255, 0.8)';
+        ctx.shadowBlur = 6;
+      } else {
+        ctx.fillStyle = `rgba(200, 210, 240, ${opacity})`;
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+      }
+      ctx.font = `${fontSize}px 'Fira Code', monospace`;
+      ctx.fillText(char, x, y);
+      ctx.shadowBlur = 0;
+
+      if (y > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i] += speeds[i];
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ========== Decryption Text Effect on Hover ========== */
+(function() {
+  const scrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`深度生成模型工程设计';
+  const elements = document.querySelectorAll('.decrypt-hover');
+
+  elements.forEach(function(el) {
+    const originalText = el.getAttribute('data-text') || el.textContent;
+    el.setAttribute('data-text', originalText);
+    let isAnimating = false;
+
+    el.addEventListener('mouseenter', function() {
+      if (isAnimating) return;
+      isAnimating = true;
+      const text = originalText;
+      const duration = 500;
+      const steps = 12;
+      const stepTime = duration / steps;
+      let currentStep = 0;
+
+      function scrambleStep() {
+        if (currentStep >= steps) {
+          el.textContent = text;
+          isAnimating = false;
+          return;
+        }
+        const progress = currentStep / steps;
+        let result = '';
+        for (let i = 0; i < text.length; i++) {
+          if (text[i] === ' ') {
+            result += ' ';
+          } else if (i < text.length * progress) {
+            result += text[i];
+          } else {
+            result += scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+          }
+        }
+        el.textContent = result;
+        currentStep++;
+        setTimeout(scrambleStep, stepTime);
+      }
+      scrambleStep();
+    });
+  });
+})();
+
+/* ========== Smooth Scroll for Internal Links ========== */
+document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+/* ========== Intersection Observer: Fade-in Sections ========== */
+(function() {
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.section-node').forEach(function(node) {
+    node.style.opacity = '0';
+    node.style.transform = 'translateY(30px)';
+    node.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+    observer.observe(node);
+  });
+})();
+</script>
+
+</body>
+</html>

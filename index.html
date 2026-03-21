@@ -36,6 +36,10 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   z-index: 0; pointer-events: none;
 }
+#particle-canvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+}
 
 /* Main Container */
 .main-container {
@@ -75,6 +79,13 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
               linear-gradient(135deg, var(--star), var(--cyan), var(--amber)) border-box;
   opacity: 0.3; pointer-events: none; z-index: 0;
 }
+.section-node .mouse-glow {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; z-index: 0; opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 50%), rgba(160, 180, 255, 0.07), transparent 60%);
+}
+.section-node:hover .mouse-glow { opacity: 1; }
 .section-node > * { position: relative; z-index: 1; }
 
 .node-header {
@@ -199,9 +210,17 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
 /* Publications */
 .pub-list { list-style: none; }
 .pub-item {
-  display: flex; gap: 18px; padding: 18px 0;
+  display: flex; gap: 18px; padding: 18px 12px;
   border-bottom: 1px solid rgba(220, 225, 255, 0.1);
   align-items: flex-start; flex-wrap: wrap;
+  transition: transform 0.15s ease, box-shadow 0.3s ease, background 0.3s ease;
+  transform-style: preserve-3d; perspective: 600px;
+  border-left: 2px solid transparent;
+}
+.pub-item:hover {
+  background: rgba(160, 180, 255, 0.03);
+  border-left-color: var(--cyan);
+  box-shadow: 0 4px 20px rgba(160, 180, 255, 0.08);
 }
 .pub-item:last-child { border-bottom: none; }
 .pub-thumb {
@@ -225,10 +244,29 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
   background: rgba(160, 180, 255, 0.1); border-color: var(--cyan);
 }
 
-/* Experience */
-.exp-list { list-style: none; }
+/* Experience Timeline */
+.exp-list { list-style: none; position: relative; padding-left: 28px; }
+.exp-list::before {
+  content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 1px;
+  background: repeating-linear-gradient(to bottom, var(--star) 0px, var(--star) 4px, transparent 4px, transparent 8px);
+  animation: flowDown 1s linear infinite;
+}
 .exp-item {
   padding: 16px 0; border-bottom: 1px solid rgba(220, 225, 255, 0.1);
+  position: relative;
+}
+.exp-item::before {
+  content: ''; position: absolute; left: -24px; top: 22px;
+  width: 10px; height: 10px; border: 2px solid var(--cyan);
+  background: var(--black); border-radius: 50%;
+  transition: all 0.3s;
+}
+.exp-item:first-child::before {
+  background: var(--cyan); box-shadow: var(--cyan-glow);
+}
+.exp-item:hover::before {
+  background: var(--cyan); box-shadow: var(--cyan-glow);
+  transform: scale(1.3);
 }
 .exp-item:last-child { border-bottom: none; }
 .exp-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
@@ -243,15 +281,23 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
   gap: 12px;
 }
 .skill-chip {
-  border: 1px solid rgba(220, 225, 255, 0.2); padding: 10px 14px;
+  border: 1px solid rgba(220, 225, 255, 0.2); padding: 10px 14px 14px;
   font-size: 12px; color: var(--star);
   background: rgba(220, 225, 255, 0.03);
   transition: all 0.3s; text-align: center;
+  position: relative; overflow: hidden;
 }
 .skill-chip:hover {
   border-color: var(--cyan); background: rgba(160, 180, 255, 0.06);
   color: var(--cyan); text-shadow: var(--cyan-glow);
 }
+.skill-bar {
+  position: absolute; bottom: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, var(--cyan), var(--amber));
+  width: 0; transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 0 8px rgba(160, 180, 255, 0.4);
+}
+.skill-chip:hover .skill-bar { width: var(--proficiency, 80%); }
 
 /* Education */
 .edu-list { list-style: none; }
@@ -332,11 +378,136 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
+
+/* Typewriter */
+.typewriter {
+  display: inline-block;
+  border-right: 3px solid var(--star);
+  animation: blink 0.7s step-end infinite;
+  white-space: nowrap; overflow: hidden;
+}
+.typewriter.done { border-right-color: transparent; animation: none; }
+
+/* Stats Counter Bar */
+.stats-bar {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;
+  padding: 16px 20px; margin: 0 auto;
+  border: 1px solid rgba(220, 225, 255, 0.15);
+  background: rgba(0, 0, 0, 0.7);
+}
+.stat-item {
+  text-align: center; min-width: 100px;
+}
+.stat-number {
+  font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700;
+  color: var(--cyan); text-shadow: var(--cyan-glow);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 10px; color: rgba(220, 225, 255, 0.45);
+  letter-spacing: 2px; text-transform: uppercase; margin-top: 4px;
+}
+
+/* Sticky Navigation */
+.nav-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(220, 225, 255, 0.1);
+  padding: 0 20px;
+  transform: translateY(-100%);
+  transition: transform 0.35s ease;
+}
+.nav-bar.visible { transform: translateY(0); }
+.nav-inner {
+  max-width: 960px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 44px;
+}
+.nav-brand {
+  font-family: 'Rajdhani', sans-serif; font-size: 14px;
+  color: var(--star); letter-spacing: 3px; font-weight: 600;
+  text-transform: uppercase;
+}
+.nav-links {
+  display: flex; gap: 6px; align-items: center;
+}
+.nav-links a {
+  font-size: 11px; color: rgba(220, 225, 255, 0.5);
+  padding: 4px 10px; letter-spacing: 1px;
+  border: 1px solid transparent; transition: all 0.3s;
+  font-family: 'Fira Code', monospace;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: var(--cyan); border-color: rgba(160, 180, 255, 0.3);
+  background: rgba(160, 180, 255, 0.05);
+  text-shadow: var(--cyan-glow);
+}
+@media (max-width: 600px) {
+  .nav-links a { padding: 4px 6px; font-size: 10px; }
+  .nav-brand { font-size: 12px; letter-spacing: 2px; }
+}
+
+/* Boot Screen */
+.boot-screen {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9999; background: var(--black);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.6s ease;
+}
+.boot-screen.fade-out { opacity: 0; pointer-events: none; }
+.boot-lines {
+  font-family: 'Fira Code', monospace; font-size: 13px;
+  color: var(--star); max-width: 600px; padding: 20px;
+  line-height: 1.9;
+}
+.boot-lines .line { opacity: 0; transition: opacity 0.15s; }
+.boot-lines .line.visible { opacity: 1; }
+.boot-lines .ok { color: #6cf; }
+.boot-lines .warn { color: var(--amber); }
+
+/* Scroll Progress Bar */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; height: 2px; z-index: 200;
+  background: linear-gradient(90deg, var(--cyan), var(--amber), var(--star));
+  width: 0%; transition: width 0.05s linear;
+  box-shadow: 0 0 8px rgba(160, 180, 255, 0.5);
+}
 </style>
 </head>
 <body>
 
+<div class="boot-screen" id="boot-screen">
+  <div class="boot-lines" id="boot-lines">
+    <div class="line">> BIOS v3.14 &mdash; Jiajie Fan Systems</div>
+    <div class="line">> Memory check ............... <span class="ok">OK</span></div>
+    <div class="line">> Loading kernel modules ...... <span class="ok">OK</span></div>
+    <div class="line">> Mounting /research .......... <span class="ok">OK</span></div>
+    <div class="line">> Mounting /publications ...... <span class="ok">OK</span></div>
+    <div class="line">> Initializing neural nets .... <span class="warn">WARM</span></div>
+    <div class="line">> Starting matrix renderer .... <span class="ok">OK</span></div>
+    <div class="line">> All systems nominal. Launching interface.<span class="cursor-blink"></span></div>
+  </div>
+</div>
+
+<div class="scroll-progress" id="scroll-progress"></div>
 <canvas id="matrix-canvas"></canvas>
+<canvas id="particle-canvas"></canvas>
+
+<nav class="nav-bar" id="nav-bar">
+  <div class="nav-inner">
+    <span class="nav-brand">JF://</span>
+    <div class="nav-links">
+      <a href="#init">INIT</a>
+      <a href="#data-input">BIO</a>
+      <a href="#process">PHD</a>
+      <a href="#output">PUBS</a>
+      <a href="#runtime-log">EXP</a>
+      <a href="#config">SKILLS</a>
+      <a href="#exit">LINK</a>
+    </div>
+  </div>
+</nav>
 
 <div class="main-container">
 
@@ -356,8 +527,8 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
         <div class="scan-line"></div>
       </div>
       <div class="hero-identity">
-        <h1 class="decrypt-hover" data-text="JIAJIE FAN">JIAJIE FAN</h1>
-        <p class="tagline decrypt-hover" data-text="Founding Engineer @ Kyrall | PhD in Generative AI for Engineering Design">Founding Engineer @ Kyrall | PhD in Generative AI for Engineering Design</p>
+        <h1 class="decrypt-hover typewriter" id="hero-title" data-text="JIAJIE FAN"></h1>
+        <p class="tagline decrypt-hover typewriter" id="hero-tagline" data-text="Founding Engineer @ Kyrall | PhD in Generative AI for Engineering Design"></p>
         <p class="location">// Munich, Germany</p>
       </div>
 
@@ -377,6 +548,28 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
 
   <div class="pipeline-connector"></div>
 
+  <!-- ===================== STATS BAR ===================== -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-number" data-target="6">0</div>
+      <div class="stat-label">Publications</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="4">0</div>
+      <div class="stat-label">Venues (ECCV, ICCV, IEEE)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="4">0</div>
+      <div class="stat-label">Years Research</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="5">0</div>
+      <div class="stat-label">Roles Held</div>
+    </div>
+  </div>
+
+  <div class="pipeline-connector"></div>
+
   <!-- ===================== DATA_INPUT: About/Bio ===================== -->
   <section class="section-node" id="data-input">
     <div class="node-header">
@@ -385,7 +578,7 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
     </div>
     <div class="binary-frame">
       <p class="about-text" style="padding: 10px 0;">
-        Founding Engineer at <span style="color:var(--amber);">Kyrall</span>, building AI-powered 3D CAD generation systems. PhD researcher in <span style="color:var(--cyan);">Generative AI for Engineering Design</span>, specializing in deep generative models that bridge the gap between machine learning and real-world product design. My work spans spectral-domain diffusion models, NURBS surface learning, and plausibility evaluation of AI-generated designs. Published at ECCV, IEEE CAI, and arXiv. Passionate about turning cutting-edge research into production systems.
+        Founding Engineer at <span style="color:var(--amber);">Kyrall</span>, building AI-powered 3D CAD generation systems. PhD researcher in <span style="color:var(--cyan);">Generative AI for Engineering Design</span>, specializing in deep generative models that bridge the gap between machine learning and real-world product design. My work spans spectral-domain diffusion models, NURBS surface learning, and plausibility evaluation of AI-generated designs. Published at ICCV, ECCV, IEEE CAI, and arXiv. Passionate about turning cutting-edge research into production systems.
       </p>
     </div>
     <svg class="data-flow-line" style="width:100%;height:2px;margin-top:10px;">
@@ -418,7 +611,7 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
   <section class="section-node" id="output">
     <div class="node-header">
       <span class="node-label">[NODE: OUTPUT[]]</span>
-      <span class="node-status">PID: 200 &nbsp;|&nbsp; <span class="active">COUNT: 5</span></span>
+      <span class="node-status">PID: 200 &nbsp;|&nbsp; <span class="active">COUNT: 6</span></span>
     </div>
     <ul class="pub-list">
       <li class="pub-item">
@@ -478,6 +671,18 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
           <div class="pub-venue">IEEE CAI 2024</div>
           <div class="pub-links">
             <a href="https://ieeexplore.ieee.org/abstract/document/10605375/" target="_blank" rel="noopener">[LINK]</a>
+          </div>
+        </div>
+      </li>
+      <li class="pub-item">
+        <div class="pub-thumb"><img src="./assets/images/geodiffusion.png" alt="GeoDiffusion"></div>
+        <div class="pub-info">
+          <div class="pub-name decrypt-hover" data-text="GeoDiffusion">GeoDiffusion</div>
+          <div class="pub-full-title">"A Training-Free Framework for Accurate 3D Geometric Conditioning in Image Generation"</div>
+          <div class="pub-authors">Phillip Mueller, Talip Uenlue, Sebastian Schmidt, Marcel Kollovieh, Jiajie Fan, Stephan G&uuml;nnemann, Lars Mikelsons</div>
+          <div class="pub-venue">ICCV 2025</div>
+          <div class="pub-links">
+            <a href="https://openaccess.thecvf.com/content/ICCV2025/papers/Mueller_GeoDiffusion_A_Training-Free_Framework_for_Accurate_3D_Geometric_Conditioning_in_ICCV_2025_paper.pdf" target="_blank" rel="noopener">[PDF]</a>
           </div>
         </div>
       </li>
@@ -545,15 +750,15 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
       <span class="node-status">PID: 400 &nbsp;|&nbsp; <span class="active">MODULES: LOADED</span></span>
     </div>
     <div class="skills-grid">
-      <div class="skill-chip decrypt-hover" data-text="LLM / AI Engineering">LLM / AI Engineering</div>
-      <div class="skill-chip decrypt-hover" data-text="Generative ML">Generative ML</div>
-      <div class="skill-chip decrypt-hover" data-text="CAD / 3D Modeling">CAD / 3D Modeling</div>
-      <div class="skill-chip decrypt-hover" data-text="Data Engineering">Data Engineering</div>
-      <div class="skill-chip decrypt-hover" data-text="Cloud / Infra">Cloud / Infra</div>
-      <div class="skill-chip decrypt-hover" data-text="Python">Python</div>
-      <div class="skill-chip decrypt-hover" data-text="C#">C#</div>
-      <div class="skill-chip decrypt-hover" data-text="TypeScript">TypeScript</div>
-      <div class="skill-chip decrypt-hover" data-text="Systems Architecture">Systems Architecture</div>
+      <div class="skill-chip decrypt-hover" data-text="LLM / AI Engineering" style="--proficiency:95%">LLM / AI Engineering<div class="skill-bar"></div></div>
+      <div class="skill-chip decrypt-hover" data-text="Generative ML" style="--proficiency:95%">Generative ML<div class="skill-bar"></div></div>
+      <div class="skill-chip decrypt-hover" data-text="CAD / 3D Modeling" style="--proficiency:90%">CAD / 3D Modeling<div class="skill-bar"></div></div>
+      <div class="skill-chip decrypt-hover" data-text="Data Engineering" style="--proficiency:80%">Data Engineering<div class="skill-bar"></div></div>
+      <div class="skill-chip decrypt-hover" data-text="Cloud / Infra" style="--proficiency:75%">Cloud / Infra<div class="skill-bar"></div></div>
+      <div class="skill-chip decrypt-hover" data-text="Python" style="--proficiency:95%">Python<div class="skill-bar"></div></div>
+      <div class="skill-chip decrypt-hover" data-text="C#" style="--proficiency:70%">C#<div class="skill-bar"></div></div>
+      <div class="skill-chip decrypt-hover" data-text="TypeScript" style="--proficiency:85%">TypeScript<div class="skill-bar"></div></div>
+      <div class="skill-chip decrypt-hover" data-text="Systems Architecture" style="--proficiency:85%">Systems Architecture<div class="skill-bar"></div></div>
     </div>
   </section>
 
@@ -675,6 +880,114 @@ a:hover { color: var(--amber); text-shadow: var(--amber-glow); }
   draw();
 })();
 
+/* ========== Mouse Glow on Section Nodes ========== */
+(function() {
+  document.querySelectorAll('.section-node').forEach(function(node) {
+    var glow = document.createElement('div');
+    glow.className = 'mouse-glow';
+    node.appendChild(glow);
+    node.addEventListener('mousemove', function(e) {
+      var rect = node.getBoundingClientRect();
+      node.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+      node.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+    });
+  });
+})();
+
+/* ========== Boot Sequence ========== */
+(function() {
+  const screen = document.getElementById('boot-screen');
+  const lines = document.querySelectorAll('#boot-lines .line');
+  let i = 0;
+  function showLine() {
+    if (i < lines.length) {
+      lines[i].classList.add('visible');
+      i++;
+      setTimeout(showLine, 180 + Math.random() * 120);
+    } else {
+      setTimeout(function() {
+        screen.classList.add('fade-out');
+        setTimeout(function() { screen.remove(); }, 600);
+      }, 500);
+    }
+  }
+  showLine();
+})();
+
+/* ========== Floating Particle Field ========== */
+(function() {
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const particles = [];
+  const count = 40;
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: 0.5 + Math.random() * 1.5,
+      dx: (Math.random() - 0.5) * 0.2,
+      dy: -0.1 - Math.random() * 0.3,
+      opacity: 0.15 + Math.random() * 0.4,
+      pulse: Math.random() * Math.PI * 2
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const time = Date.now() * 0.001;
+    particles.forEach(function(p) {
+      p.x += p.dx;
+      p.y += p.dy;
+      p.pulse += 0.02;
+      if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+      if (p.x < -10) p.x = canvas.width + 10;
+      if (p.x > canvas.width + 10) p.x = -10;
+
+      const glow = p.opacity * (0.7 + 0.3 * Math.sin(p.pulse));
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(200, 210, 255, ' + glow + ')';
+      ctx.shadowColor = 'rgba(200, 210, 255, 0.6)';
+      ctx.shadowBlur = p.r * 4;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ========== Typewriter Boot Sequence ========== */
+(function() {
+  function typewrite(el, text, speed, callback) {
+    let i = 0;
+    function tick() {
+      if (i <= text.length) {
+        el.textContent = text.slice(0, i);
+        i++;
+        setTimeout(tick, speed);
+      } else {
+        el.classList.add('done');
+        if (callback) callback();
+      }
+    }
+    tick();
+  }
+  const title = document.getElementById('hero-title');
+  const tagline = document.getElementById('hero-tagline');
+  setTimeout(function() {
+    typewrite(title, 'JIAJIE FAN', 80, function() {
+      setTimeout(function() {
+        typewrite(tagline, 'Founding Engineer @ Kyrall | PhD in Generative AI for Engineering Design', 18);
+      }, 200);
+    });
+  }, 400);
+})();
+
 /* ========== Decryption Text Effect on Hover ========== */
 (function() {
   const scrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`深度生成模型工程设计';
@@ -730,6 +1043,95 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     }
   });
 });
+
+/* ========== Scroll Progress Bar ========== */
+(function() {
+  const bar = document.getElementById('scroll-progress');
+  window.addEventListener('scroll', function() {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    bar.style.width = progress + '%';
+  });
+})();
+
+/* ========== Sticky Nav: show after scrolling past hero ========== */
+(function() {
+  const nav = document.getElementById('nav-bar');
+  const navLinks = nav.querySelectorAll('.nav-links a');
+  const sections = document.querySelectorAll('.section-node[id]');
+  let lastScroll = 0;
+
+  window.addEventListener('scroll', function() {
+    const scrollY = window.scrollY;
+    if (scrollY > 300) {
+      nav.classList.add('visible');
+    } else {
+      nav.classList.remove('visible');
+    }
+    lastScroll = scrollY;
+
+    // Active section highlight
+    let current = '';
+    sections.forEach(function(section) {
+      const top = section.offsetTop - 80;
+      if (scrollY >= top) current = section.getAttribute('id');
+    });
+    navLinks.forEach(function(link) {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+    });
+  });
+})();
+
+/* ========== 3D Tilt on Publication Cards ========== */
+(function() {
+  document.querySelectorAll('.pub-item').forEach(function(card) {
+    card.addEventListener('mousemove', function(e) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = ((y - centerY) / centerY) * -4;
+      const rotateY = ((x - centerX) / centerX) * 4;
+      card.style.transform = 'perspective(600px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.01)';
+    });
+    card.addEventListener('mouseleave', function() {
+      card.style.transform = 'perspective(600px) rotateX(0) rotateY(0) scale(1)';
+    });
+  });
+})();
+
+/* ========== Animated Stat Counters ========== */
+(function() {
+  const counters = document.querySelectorAll('.stat-number[data-target]');
+  let counted = false;
+  const statsBar = document.querySelector('.stats-bar');
+  if (!statsBar) return;
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !counted) {
+        counted = true;
+        counters.forEach(function(counter) {
+          const target = parseInt(counter.getAttribute('data-target'));
+          const duration = 1500;
+          const start = performance.now();
+          function update(now) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            counter.textContent = Math.round(target * eased);
+            if (progress < 1) requestAnimationFrame(update);
+          }
+          requestAnimationFrame(update);
+        });
+      }
+    });
+  }, { threshold: 0.5 });
+  observer.observe(statsBar);
+})();
 
 /* ========== Intersection Observer: Fade-in Sections ========== */
 (function() {
